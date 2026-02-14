@@ -1,0 +1,235 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.leaveButton {
+  padding: 0.5rem 1rem;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  color: #374151;
+  transition: background 0.2s;
+}
+
+.leaveButton:hover {
+  background: #e5e7eb;
+}
+
+.roomInfo {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.roomId {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.roomId span {
+  color: #6b7280;
+}
+
+.roomId strong {
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+  color: #1f2937;
+}
+
+.copyButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.25rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.copyButton:hover {
+  opacity: 1;
+}
+
+.players {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.playerCard {
+  flex: 1;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.playerCard.ready {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+
+.playerCard.waiting {
+  border-style: dashed;
+}
+
+.playerName {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.hostBadge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+  font-weight: 500;
+}
+
+.playerStatus {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.playerCard.ready .playerStatus {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.waitingText {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.vs {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #9ca3af;
+}
+
+.settings {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.settings h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #374151;
+}
+
+.settingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.settingRow label {
+  color: #4b5563;
+}
+
+.settingRow select {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background: white;
+  min-width: 150px;
+}
+
+.settingRow select:disabled {
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+.settingsNote {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin: 0.5rem 0 0 0;
+  text-align: center;
+}
+
+.actions {
+  text-align: center;
+}
+
+.readyButton {
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.readyButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.readyButton.readyActive {
+  background: #10b981;
+}
+
+.readyButton.readyActive:hover {
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.waitingMessage {
+  color: #6b7280;
+  line-height: 1.8;
+}
+
+.waitingMessage strong {
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+.startingMessage {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 0.5rem;
+  text-align: center;
+  font-weight: 500;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}

@@ -1,0 +1,43 @@
+.container {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.questionText {
+  font-size: 2rem;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.reading {
+  font-size: 1.2rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.romajiLine {
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 1.5rem;
+  text-align: center;
+  letter-spacing: 0.05em;
+  min-height: 2rem;
+}
+
+.typed {
+  color: #10b981;
+}
+
+.current {
+  color: #667eea;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.remaining {
+  color: #9ca3af;
+}
