@@ -55,7 +55,7 @@ export function Home({
       alert('ルームIDを入力してください');
       return;
     }
-    onJoinRoom(roomId.trim().toUpperCase(), playerName.trim());
+    onJoinRoom(roomId.trim(), playerName.trim());
   };
 
   const handleWatchRoom = () => {
@@ -67,7 +67,7 @@ export function Home({
       alert('ルームIDを入力してください');
       return;
     }
-    onWatchRoom(roomId.trim().toUpperCase(), playerName.trim());
+    onWatchRoom(roomId.trim(), playerName.trim());
   };
 
   const handleChangeServer = () => {
@@ -193,10 +193,10 @@ export function Home({
             <input
               type="text"
               value={roomId}
-              onChange={e => setRoomId(e.target.value.toUpperCase())}
-              placeholder="ABC123"
+              onChange={e => setRoomId(e.target.value.replace(/\D/g, ''))}
+              placeholder="123456"
               maxLength={6}
-              style={{ textTransform: 'uppercase' }}
+              inputMode="numeric"
             />
           </div>
 
@@ -231,10 +231,10 @@ export function Home({
             <input
               type="text"
               value={roomId}
-              onChange={e => setRoomId(e.target.value.toUpperCase())}
-              placeholder="ABC123"
+              onChange={e => setRoomId(e.target.value.replace(/\D/g, ''))}
+              placeholder="123456"
               maxLength={6}
-              style={{ textTransform: 'uppercase' }}
+              inputMode="numeric"
             />
           </div>
 

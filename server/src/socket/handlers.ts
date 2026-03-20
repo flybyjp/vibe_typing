@@ -53,7 +53,7 @@ export function setupSocketHandlers(io: TypedServer) {
         isReady: false
       };
 
-      const room = roomManager.joinRoom(roomId.toUpperCase(), player);
+      const room = roomManager.joinRoom(roomId, player);
 
       if (!room) {
         socket.emit('roomError', { message: 'ルームが見つからないか、満員です' });
@@ -215,7 +215,7 @@ export function setupSocketHandlers(io: TypedServer) {
 
     // 観戦参加
     socket.on('watchRoom', ({ roomId, spectatorName }) => {
-      const room = roomManager.getRoom(roomId.toUpperCase());
+      const room = roomManager.getRoom(roomId);
       if (!room) {
         socket.emit('watchError', { message: 'ルームが見つかりません' });
         return;
