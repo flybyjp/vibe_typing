@@ -1,0 +1,154 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.leaveButton {
+  padding: 0.5rem 1rem;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  color: #374151;
+  transition: background 0.2s;
+}
+
+.leaveButton:hover {
+  background: #e5e7eb;
+}
+
+.roomInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.roomInfo span {
+  color: #6b7280;
+}
+
+.roomInfo strong {
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+  color: #1f2937;
+}
+
+.badge {
+  display: block;
+  width: fit-content;
+  margin: 0 auto 1.5rem;
+  background: #dc2626;
+  color: white;
+  padding: 0.25rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  animation: pulse 2s infinite;
+}
+
+.players {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.playerCard {
+  flex: 1;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.playerCard.ready {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+
+.playerCard.waiting {
+  border-style: dashed;
+}
+
+.playerName {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.hostBadge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+  font-weight: 500;
+}
+
+.playerStatus {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.playerCard.ready .playerStatus {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.waitingText {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.vs {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #9ca3af;
+}
+
+.spectatorInfo {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.waitingMessage {
+  text-align: center;
+  padding: 1rem;
+  background: #f3f4f6;
+  border-radius: 0.5rem;
+  color: #6b7280;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

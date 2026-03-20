@@ -1,4 +1,4 @@
-import type { ServerRoom, Player, RoomSettings, GameState, PlayerGameState } from '../types/index.js';
+import type { ServerRoom, Player, RoomSettings, GameState, PlayerGameState, Spectator, SpectatorGameSnapshot } from '../types/index.js';
 
 class RoomManager {
   private rooms: Map<string, ServerRoom> = new Map();
@@ -22,11 +22,14 @@ class RoomManager {
     const room: ServerRoom = {
       id: roomId,
       players: [hostPlayer],
+      spectators: [],
       settings,
       status: 'waiting',
       currentRound: 0,
       scores: { [hostPlayer.id]: 0 },
-      gameState: null
+      gameState: null,
+      spectatorIds: new Set(),
+      rematchRequests: new Set()
     };
     this.rooms.set(roomId, room);
     this.playerRooms.set(hostPlayer.id, roomId);
@@ -88,6 +91,10 @@ class RoomManager {
 
     // ルームが空になったら削除
     if (room.players.length === 0) {
+      // 観戦者のクリーンアップ
+      room.spectators.forEach(s => this.playerRooms.delete(s.id));
+      room.spectators = [];
+      room.spectatorIds.clear();
       this.rooms.delete(roomId);
       return { room: null, wasHost };
     }
@@ -233,6 +240,17 @@ class RoomManager {
     return room;
   }
 
+  requestRematch(playerId: string): { room: ServerRoom; allAgreed: boolean } | null {
+    const room = this.getRoomByPlayerId(playerId);
+    if (!room || room.status !== 'finished') return null;
+
+    room.rematchRequests.add(playerId);
+
+    // 両者がリクエストしたか確認
+    const allAgreed = room.players.every(p => room.rematchRequests.has(p.id));
+    return { room, allAgreed };
+  }
+
   resetForRematch(roomId: string): ServerRoom | null {
     const room = this.rooms.get(roomId);
     if (!room) return null;
@@ -240,12 +258,68 @@ class RoomManager {
     room.status = 'waiting';
     room.currentRound = 0;
     room.gameState = null;
+    room.rematchRequests.clear();
     room.players.forEach(player => {
       player.isReady = false;
       room.scores[player.id] = 0;
     });
 
     return room;
+  }
+
+  // --- 観戦者管理 ---
+
+  joinAsSpectator(roomId: string, spectator: Spectator): ServerRoom | null {
+    const room = this.rooms.get(roomId);
+    if (!room) return null;
+    if (room.status === 'finished') return null;
+
+    room.spectators.push(spectator);
+    room.spectatorIds.add(spectator.id);
+    this.playerRooms.set(spectator.id, roomId);
+    return room;
+  }
+
+  leaveSpectate(spectatorId: string): ServerRoom | null {
+    const roomId = this.playerRooms.get(spectatorId);
+    if (!roomId) return null;
+    const room = this.rooms.get(roomId);
+    if (!room) return null;
+
+    room.spectators = room.spectators.filter(s => s.id !== spectatorId);
+    room.spectatorIds.delete(spectatorId);
+    this.playerRooms.delete(spectatorId);
+    return room;
+  }
+
+  isSpectator(socketId: string): boolean {
+    const roomId = this.playerRooms.get(socketId);
+    if (!roomId) return false;
+    const room = this.rooms.get(roomId);
+    return room?.spectatorIds.has(socketId) ?? false;
+  }
+
+  getSpectatorSnapshot(roomId: string): SpectatorGameSnapshot | null {
+    const room = this.rooms.get(roomId);
+    if (!room || !room.gameState || room.status !== 'playing') return null;
+
+    const question = room.gameState.questions[room.gameState.currentQuestionIndex];
+    const playerStates = room.players.map(p => {
+      const state = room.gameState!.playerStates.get(p.id);
+      return {
+        playerId: p.id,
+        playerName: p.name,
+        progress: state?.progress ?? 0
+      };
+    });
+
+    return {
+      question,
+      round: room.currentRound,
+      totalRounds: room.settings.rounds,
+      playerStates,
+      scores: room.scores
+    };
   }
 }
 

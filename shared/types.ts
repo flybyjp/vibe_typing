@@ -8,6 +8,12 @@ export interface Player {
   isReady: boolean;
 }
 
+// 観戦者情報
+export interface Spectator {
+  id: string;
+  name: string;
+}
+
 // ルーム設定
 export interface RoomSettings {
   rounds: number; // ラウンド数 (1, 3, 5, 7, 9)
@@ -18,10 +24,24 @@ export interface RoomSettings {
 export interface Room {
   id: string;
   players: Player[];
+  spectators: Spectator[];
   settings: RoomSettings;
   status: RoomStatus;
   currentRound: number;
   scores: Record<string, number>; // playerId -> score
+}
+
+// 観戦者向けゲームスナップショット（途中参加時の状態同期）
+export interface SpectatorGameSnapshot {
+  question: Question;
+  round: number;
+  totalRounds: number;
+  playerStates: {
+    playerId: string;
+    playerName: string;
+    progress: number;
+  }[];
+  scores: Record<string, number>;
 }
 
 export type RoomStatus = 'waiting' | 'ready' | 'playing' | 'finished';
@@ -107,6 +127,10 @@ export interface ClientToServerEvents {
 
   // 問題セット一覧取得
   getQuestionSets: () => void;
+
+  // 観戦
+  watchRoom: (data: { roomId: string; spectatorName: string }) => void;
+  leaveSpectate: () => void;
 }
 
 // サーバー → クライアント
@@ -133,4 +157,12 @@ export interface ServerToClientEvents {
 
   // 問題セット
   questionSets: (data: { sets: QuestionSetInfo[] }) => void;
+
+  // 観戦
+  watchJoined: (data: { room: Room; snapshot: SpectatorGameSnapshot | null }) => void;
+  watchError: (data: { message: string }) => void;
+  spectatorJoined: (data: { spectator: Spectator; spectatorCount: number }) => void;
+  spectatorLeft: (data: { spectatorId: string; spectatorCount: number }) => void;
+  playerProgress: (data: { playerId: string; progress: number }) => void;
+  roomClosed: () => void;
 }

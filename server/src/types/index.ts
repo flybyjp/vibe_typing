@@ -6,6 +6,8 @@ import type { Room, Player, PlayerGameState, RoomSettings } from '../../../share
 // サーバー内部で使用する拡張ルーム情報
 export interface ServerRoom extends Room {
   gameState: GameState | null;
+  spectatorIds: Set<string>;
+  rematchRequests: Set<string>; // 再戦をリクエストしたプレイヤーIDの集合
 }
 
 // ゲーム状態

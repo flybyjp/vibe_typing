@@ -8,6 +8,7 @@ interface HomeProps {
   questionSets: QuestionSetInfo[];
   onCreateRoom: (playerName: string, settings: RoomSettings) => void;
   onJoinRoom: (roomId: string, playerName: string) => void;
+  onWatchRoom: (roomId: string, spectatorName: string) => void;
   onFetchQuestionSets: () => void;
   onChangeServer: (url: string) => void;
   currentServerUrl: string;
@@ -19,11 +20,12 @@ export function Home({
   questionSets,
   onCreateRoom,
   onJoinRoom,
+  onWatchRoom,
   onFetchQuestionSets,
   onChangeServer,
   currentServerUrl
 }: HomeProps) {
-  const [mode, setMode] = useState<'menu' | 'create' | 'join' | 'server'>('menu');
+  const [mode, setMode] = useState<'menu' | 'create' | 'join' | 'server' | 'watch'>('menu');
   const [playerName, setPlayerName] = useState('');
   const [roomId, setRoomId] = useState('');
   const [rounds, setRounds] = useState(3);
@@ -54,6 +56,18 @@ export function Home({
       return;
     }
     onJoinRoom(roomId.trim().toUpperCase(), playerName.trim());
+  };
+
+  const handleWatchRoom = () => {
+    if (!playerName.trim()) {
+      alert('名前を入力してください');
+      return;
+    }
+    if (!roomId.trim()) {
+      alert('ルームIDを入力してください');
+      return;
+    }
+    onWatchRoom(roomId.trim().toUpperCase(), playerName.trim());
   };
 
   const handleChangeServer = () => {
@@ -94,6 +108,13 @@ export function Home({
             disabled={!isConnected}
           >
             ルームに参加
+          </button>
+          <button
+            className={styles.menuButton}
+            onClick={() => setMode('watch')}
+            disabled={!isConnected}
+          >
+            観戦する
           </button>
           <button
             className={`${styles.menuButton} ${styles.secondary}`}
@@ -182,6 +203,44 @@ export function Home({
           <div className={styles.buttons}>
             <button className={styles.primaryButton} onClick={handleJoinRoom}>
               参加
+            </button>
+            <button className={styles.secondaryButton} onClick={() => setMode('menu')}>
+              戻る
+            </button>
+          </div>
+        </div>
+      )}
+
+      {mode === 'watch' && (
+        <div className={styles.form}>
+          <h2>観戦する</h2>
+
+          <div className={styles.formGroup}>
+            <label>あなたの名前</label>
+            <input
+              type="text"
+              value={playerName}
+              onChange={e => setPlayerName(e.target.value)}
+              placeholder="名前を入力"
+              maxLength={20}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>ルームID</label>
+            <input
+              type="text"
+              value={roomId}
+              onChange={e => setRoomId(e.target.value.toUpperCase())}
+              placeholder="ABC123"
+              maxLength={6}
+              style={{ textTransform: 'uppercase' }}
+            />
+          </div>
+
+          <div className={styles.buttons}>
+            <button className={styles.primaryButton} onClick={handleWatchRoom}>
+              観戦開始
             </button>
             <button className={styles.secondaryButton} onClick={() => setMode('menu')}>
               戻る

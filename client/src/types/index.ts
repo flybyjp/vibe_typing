@@ -2,7 +2,7 @@
 export * from '../../../shared/types';
 
 // 画面状態
-export type ScreenState = 'home' | 'lobby' | 'game' | 'result';
+export type ScreenState = 'home' | 'lobby' | 'game' | 'result' | 'spectate-lobby' | 'spectate';
 
 // ゲーム状態（クライアント側）
 export interface ClientGameState {

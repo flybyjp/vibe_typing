@@ -10,6 +10,7 @@ interface ResultProps {
   gameResult?: GameResult;
   isGameEnd: boolean;
   rematchRequested: boolean;
+  opponentRematchRequested: boolean;
   onRematch: () => void;
   onLeave: () => void;
 }
@@ -21,6 +22,7 @@ export function Result({
   gameResult,
   isGameEnd,
   rematchRequested,
+  opponentRematchRequested,
   onRematch,
   onLeave
 }: ResultProps) {
@@ -144,6 +146,11 @@ export function Result({
           </div>
 
           <div className={styles.actions}>
+            {opponentRematchRequested && !rematchRequested && (
+              <div className={styles.opponentRematch}>
+                相手が再戦をリクエストしています！
+              </div>
+            )}
             <button
               className={styles.rematchButton}
               onClick={onRematch}

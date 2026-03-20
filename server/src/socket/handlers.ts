@@ -1,11 +1,24 @@
 import type { Server, Socket } from 'socket.io';
-import type { ClientToServerEvents, ServerToClientEvents, Player, RoomSettings, RoundResult } from '../types/index.js';
+import type { ClientToServerEvents, ServerToClientEvents, Player, RoomSettings, RoundResult, Spectator, Room } from '../types/index.js';
+import type { ServerRoom } from '../types/index.js';
 import { roomManager } from './roomManager.js';
 import { getQuestionSets, getRandomQuestions } from '../game/questionLoader.js';
 import { calculateRoundResult, calculateGameResult, isGameFinished } from '../game/gameEngine.js';
 
 type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 type TypedServer = Server<ClientToServerEvents, ServerToClientEvents>;
+
+function toClientRoom(room: ServerRoom): Room {
+  return {
+    id: room.id,
+    players: room.players,
+    spectators: room.spectators,
+    settings: room.settings,
+    status: room.status,
+    currentRound: room.currentRound,
+    scores: room.scores
+  };
+}
 
 export function setupSocketHandlers(io: TypedServer) {
   io.on('connection', (socket: TypedSocket) => {
@@ -25,14 +38,7 @@ export function setupSocketHandlers(io: TypedServer) {
 
       socket.emit('roomCreated', {
         roomId: room.id,
-        room: {
-          id: room.id,
-          players: room.players,
-          settings: room.settings,
-          status: room.status,
-          currentRound: room.currentRound,
-          scores: room.scores
-        }
+        room: toClientRoom(room)
       });
 
       console.log(`Room created: ${room.id} by ${playerName}`);
@@ -58,27 +64,13 @@ export function setupSocketHandlers(io: TypedServer) {
 
       // 参加したプレイヤーにルーム情報を送信
       socket.emit('roomJoined', {
-        room: {
-          id: room.id,
-          players: room.players,
-          settings: room.settings,
-          status: room.status,
-          currentRound: room.currentRound,
-          scores: room.scores
-        }
+        room: toClientRoom(room)
       });
 
       // 他のプレイヤーに通知
       socket.to(room.id).emit('playerJoined', {
         player,
-        room: {
-          id: room.id,
-          players: room.players,
-          settings: room.settings,
-          status: room.status,
-          currentRound: room.currentRound,
-          scores: room.scores
-        }
+        room: toClientRoom(room)
       });
 
       console.log(`Player ${playerName} joined room: ${room.id}`);
@@ -105,6 +97,7 @@ export function setupSocketHandlers(io: TypedServer) {
 
     // 準備完了
     socket.on('ready', () => {
+      if (roomManager.isSpectator(socket.id)) return;
       const room = roomManager.setPlayerReady(socket.id, true);
       if (!room) return;
 
@@ -118,6 +111,7 @@ export function setupSocketHandlers(io: TypedServer) {
 
     // 準備解除
     socket.on('unready', () => {
+      if (roomManager.isSpectator(socket.id)) return;
       const room = roomManager.setPlayerReady(socket.id, false);
       if (!room) return;
 
@@ -126,6 +120,7 @@ export function setupSocketHandlers(io: TypedServer) {
 
     // タイピング進捗
     socket.on('typing', ({ position, correctCount, missCount }) => {
+      if (roomManager.isSpectator(socket.id)) return;
       const room = roomManager.getRoomByPlayerId(socket.id);
       if (!room || room.status !== 'playing') return;
 
@@ -133,7 +128,13 @@ export function setupSocketHandlers(io: TypedServer) {
 
       const playerState = room.gameState?.playerStates.get(socket.id);
       if (playerState) {
+        // 対戦者同士の進捗通知（既存）
         socket.to(room.id).emit('opponentProgress', {
+          playerId: socket.id,
+          progress: playerState.progress
+        });
+        // 観戦者向け: プレイヤー個別の進捗配信
+        io.to(room.id).emit('playerProgress', {
           playerId: socket.id,
           progress: playerState.progress
         });
@@ -142,6 +143,7 @@ export function setupSocketHandlers(io: TypedServer) {
 
     // 文章完了
     socket.on('finished', ({ clearTime, correctCount, missCount }) => {
+      if (roomManager.isSpectator(socket.id)) return;
       const result = roomManager.finishRound(socket.id, clearTime, correctCount, missCount);
       if (!result) return;
 
@@ -180,10 +182,22 @@ export function setupSocketHandlers(io: TypedServer) {
 
     // 再戦リクエスト
     socket.on('requestRematch', () => {
-      const room = roomManager.getRoomByPlayerId(socket.id);
-      if (!room) return;
+      if (roomManager.isSpectator(socket.id)) return;
+      const result = roomManager.requestRematch(socket.id);
+      if (!result) return;
 
+      const { room, allAgreed } = result;
+
+      // 相手に再戦リクエストを通知
       socket.to(room.id).emit('rematchRequested', { playerId: socket.id });
+
+      // 両者が合意したら再戦開始
+      if (allAgreed) {
+        const resetRoom = roomManager.resetForRematch(room.id);
+        if (resetRoom) {
+          io.to(room.id).emit('rematchStart');
+        }
+      }
     });
 
     // 問題セット一覧取得
@@ -192,27 +206,85 @@ export function setupSocketHandlers(io: TypedServer) {
       socket.emit('questionSets', { sets });
     });
 
+    // 観戦参加
+    socket.on('watchRoom', ({ roomId, spectatorName }) => {
+      const room = roomManager.getRoom(roomId.toUpperCase());
+      if (!room) {
+        socket.emit('watchError', { message: 'ルームが見つかりません' });
+        return;
+      }
+      if (room.status === 'finished') {
+        socket.emit('watchError', { message: 'このゲームは終了しました' });
+        return;
+      }
+
+      const spectator: Spectator = {
+        id: socket.id,
+        name: spectatorName
+      };
+
+      const updatedRoom = roomManager.joinAsSpectator(room.id, spectator);
+      if (!updatedRoom) {
+        socket.emit('watchError', { message: '観戦参加に失敗しました' });
+        return;
+      }
+
+      socket.join(room.id);
+
+      const snapshot = roomManager.getSpectatorSnapshot(room.id);
+      socket.emit('watchJoined', {
+        room: toClientRoom(updatedRoom),
+        snapshot
+      });
+
+      socket.to(room.id).emit('spectatorJoined', {
+        spectator,
+        spectatorCount: updatedRoom.spectators.length
+      });
+
+      console.log(`Spectator ${spectatorName} joined room: ${room.id}`);
+    });
+
+    // 観戦離脱
+    socket.on('leaveSpectate', () => {
+      handleSpectatorLeave(socket, io);
+    });
+
     // 切断時
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id}`);
-      handlePlayerLeave(socket, io);
+      if (roomManager.isSpectator(socket.id)) {
+        handleSpectatorLeave(socket, io);
+      } else {
+        handlePlayerLeave(socket, io);
+      }
     });
   });
 }
 
 function handlePlayerLeave(socket: TypedSocket, io: TypedServer) {
+  // ルーム削除前にルームIDを取得（観戦者通知用）
+  const roomBefore = roomManager.getRoomByPlayerId(socket.id);
+  const roomId = roomBefore?.id;
+
   const { room } = roomManager.leaveRoom(socket.id);
   if (room) {
     io.to(room.id).emit('playerLeft', {
       playerId: socket.id,
-      room: {
-        id: room.id,
-        players: room.players,
-        settings: room.settings,
-        status: room.status,
-        currentRound: room.currentRound,
-        scores: room.scores
-      }
+      room: toClientRoom(room)
+    });
+  } else if (roomId) {
+    // ルームが削除された場合、残っている観戦者に通知
+    io.to(roomId).emit('roomClosed');
+  }
+}
+
+function handleSpectatorLeave(socket: TypedSocket, io: TypedServer) {
+  const room = roomManager.leaveSpectate(socket.id);
+  if (room) {
+    io.to(room.id).emit('spectatorLeft', {
+      spectatorId: socket.id,
+      spectatorCount: room.spectators.length
     });
   }
 }
