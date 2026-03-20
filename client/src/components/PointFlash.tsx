@@ -28,10 +28,22 @@ export function PointFlash({ side, playerName, onAnimationEnd }: PointFlashProps
     })), []
   );
 
+  const colorVars = side === 'left'
+    ? {
+        '--player-color': '#667eea',
+        '--player-glow': 'rgba(102, 126, 234, 0.8)',
+        '--player-glow-soft': 'rgba(102, 126, 234, 0.4)',
+      }
+    : {
+        '--player-color': '#f97316',
+        '--player-glow': 'rgba(249, 115, 22, 0.8)',
+        '--player-glow-soft': 'rgba(249, 115, 22, 0.4)',
+      };
+
   if (!visible) return null;
 
   return (
-    <div className={styles.overlay}>
+    <div className={`${styles.overlay} ${styles[side]}`} style={colorVars as React.CSSProperties}>
       <div className={`${styles.flash} ${styles[side]}`} />
 
       <div className={styles.banner}>

@@ -5,7 +5,14 @@
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: center;
+}
+
+.overlay.left {
+  justify-content: flex-start;
+}
+
+.overlay.right {
+  justify-content: flex-end;
 }
 
 /* 左右フラッシュ背景 */
@@ -32,10 +39,11 @@
   100% { opacity: 0; }
 }
 
-/* センターバナー */
+/* バナー */
 .banner {
   text-align: center;
   z-index: 10;
+  width: 50%;
   animation: bannerEntrance 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
              bannerExit 0.4s ease-in 1.6s forwards;
 }
@@ -45,8 +53,8 @@
   font-weight: 900;
   color: white;
   text-shadow:
-    0 0 40px rgba(16, 185, 129, 0.8),
-    0 0 80px rgba(16, 185, 129, 0.4),
+    0 0 40px var(--player-glow),
+    0 0 80px var(--player-glow-soft),
     0 4px 8px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.05em;
 }
@@ -54,9 +62,9 @@
 .bannerSub {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #10b981;
+  color: var(--player-color);
   text-shadow:
-    0 0 20px rgba(16, 185, 129, 0.6),
+    0 0 20px var(--player-glow),
     0 2px 4px rgba(0, 0, 0, 0.3);
   letter-spacing: 0.2em;
 }
@@ -80,8 +88,18 @@
 /* パーティクル */
 .particles {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  width: 50%;
   z-index: 5;
+}
+
+.overlay.left .particles {
+  left: 0;
+}
+
+.overlay.right .particles {
+  right: 0;
 }
 
 .particle {
