@@ -153,6 +153,12 @@ export function setupSocketHandlers(io: TypedServer) {
       const roundResult = calculateRoundResult(room, winnerId, room.currentRound);
       room.roundResults.push(roundResult);
 
+      // 完了プレイヤーの進捗を100%に更新（観戦者向け）
+      io.to(room.id).emit('playerProgress', {
+        playerId: winnerId,
+        progress: 100
+      });
+
       io.to(room.id).emit('roundEnd', {
         result: roundResult,
         scores: room.scores
