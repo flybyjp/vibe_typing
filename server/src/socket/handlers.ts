@@ -151,6 +151,7 @@ export function setupSocketHandlers(io: TypedServer) {
 
       // ラウンド結果を計算
       const roundResult = calculateRoundResult(room, winnerId, room.currentRound);
+      room.roundResults.push(roundResult);
 
       io.to(room.id).emit('roundEnd', {
         result: roundResult,

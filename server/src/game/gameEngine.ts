@@ -64,20 +64,32 @@ export function calculateGameResult(room: ServerRoom): GameResult {
     winnerId = null;
   }
 
-  // 各プレイヤーの最終統計を計算
+  // 各プレイヤーの最終統計を計算（ラウンド結果から平均を算出）
   room.players.forEach(player => {
+    const playerRoundStats = room.roundResults
+      .flatMap(r => r.players)
+      .filter(p => p.playerId === player.id);
+
+    const roundCount = playerRoundStats.length;
+    const totalKpm = roundCount > 0
+      ? Math.round(playerRoundStats.reduce((sum, s) => sum + s.kpm, 0) / roundCount)
+      : 0;
+    const totalAccuracy = roundCount > 0
+      ? Math.round(playerRoundStats.reduce((sum, s) => sum + s.accuracy, 0) / roundCount)
+      : 0;
+
     playerFinalStats.push({
       playerId: player.id,
       playerName: player.name,
       wins: room.scores[player.id] || 0,
-      totalKpm: 0, // ラウンド結果から集計する場合は別途計算
-      totalAccuracy: 0
+      totalKpm,
+      totalAccuracy
     });
   });
 
   return {
     winnerId,
-    rounds: [], // 呼び出し元でラウンド結果を追加
+    rounds: room.roundResults,
     players: playerFinalStats
   };
 }

@@ -29,7 +29,8 @@ class RoomManager {
       scores: { [hostPlayer.id]: 0 },
       gameState: null,
       spectatorIds: new Set(),
-      rematchRequests: new Set()
+      rematchRequests: new Set(),
+      roundResults: []
     };
     this.rooms.set(roomId, room);
     this.playerRooms.set(hostPlayer.id, roomId);
@@ -259,6 +260,7 @@ class RoomManager {
     room.currentRound = 0;
     room.gameState = null;
     room.rematchRequests.clear();
+    room.roundResults = [];
     room.players.forEach(player => {
       player.isReady = false;
       room.scores[player.id] = 0;
