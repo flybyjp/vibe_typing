@@ -30,7 +30,7 @@
   font-size: 1.1rem;
 }
 
-.myScore {
+.primaryScore {
   color: #667eea;
   font-weight: 600;
 }
@@ -39,7 +39,7 @@
   color: #9ca3af;
 }
 
-.opponentScore {
+.secondaryScore {
   color: #f97316;
   font-weight: 600;
 }

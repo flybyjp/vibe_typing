@@ -54,6 +54,14 @@
   font-size: 1.1rem;
 }
 
+.primaryName {
+  color: #667eea;
+}
+
+.secondaryName {
+  color: #f97316;
+}
+
 .statItem {
   display: flex;
   justify-content: space-between;

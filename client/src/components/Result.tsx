@@ -28,8 +28,8 @@ export function Result({
 }: ResultProps) {
   const [hasPlayedSound, setHasPlayedSound] = useState(false);
 
-  const currentPlayer = room.players.find(p => p.id === currentPlayerId);
-  const opponent = room.players.find(p => p.id !== currentPlayerId);
+  const host = room.players.find(p => p.isHost);
+  const guest = room.players.find(p => !p.isHost);
 
   // 勝敗判定
   const isWinner = isGameEnd
@@ -50,9 +50,9 @@ export function Result({
     setHasPlayedSound(true);
   }
 
-  // ラウンド結果の統計
-  const myStats = roundResult?.players.find(p => p.playerId === currentPlayerId);
-  const opponentStats = roundResult?.players.find(p => p.playerId !== currentPlayerId);
+  // ラウンド結果の統計（ホスト→ゲスト順）
+  const hostStats = roundResult?.players.find(p => p.playerId === host?.id);
+  const guestStats = roundResult?.players.find(p => p.playerId === guest?.id);
 
   return (
     <div className={styles.container}>
@@ -72,20 +72,20 @@ export function Result({
 
           <div className={styles.statsComparison}>
             <div className={styles.playerStats}>
-              <h3>{currentPlayer?.name}</h3>
-              {myStats && (
+              <h3 className={styles.primaryName}>{host?.name}</h3>
+              {hostStats && (
                 <>
                   <div className={styles.statItem}>
                     <span>タイム</span>
-                    <strong>{(myStats.clearTime / 1000).toFixed(2)}秒</strong>
+                    <strong>{(hostStats.clearTime / 1000).toFixed(2)}秒</strong>
                   </div>
                   <div className={styles.statItem}>
                     <span>KPM</span>
-                    <strong>{myStats.kpm}</strong>
+                    <strong>{hostStats.kpm}</strong>
                   </div>
                   <div className={styles.statItem}>
                     <span>正確率</span>
-                    <strong>{myStats.accuracy}%</strong>
+                    <strong>{hostStats.accuracy}%</strong>
                   </div>
                 </>
               )}
@@ -94,20 +94,20 @@ export function Result({
             <div className={styles.vs}>VS</div>
 
             <div className={styles.playerStats}>
-              <h3>{opponent?.name}</h3>
-              {opponentStats && (
+              <h3 className={styles.secondaryName}>{guest?.name}</h3>
+              {guestStats && (
                 <>
                   <div className={styles.statItem}>
                     <span>タイム</span>
-                    <strong>{(opponentStats.clearTime / 1000).toFixed(2)}秒</strong>
+                    <strong>{(guestStats.clearTime / 1000).toFixed(2)}秒</strong>
                   </div>
                   <div className={styles.statItem}>
                     <span>KPM</span>
-                    <strong>{opponentStats.kpm}</strong>
+                    <strong>{guestStats.kpm}</strong>
                   </div>
                   <div className={styles.statItem}>
                     <span>正確率</span>
-                    <strong>{opponentStats.accuracy}%</strong>
+                    <strong>{guestStats.accuracy}%</strong>
                   </div>
                 </>
               )}
@@ -117,7 +117,7 @@ export function Result({
           <div className={styles.currentScore}>
             <span>現在のスコア:</span>
             <strong>
-              {room.scores[currentPlayerId] || 0} - {room.scores[opponent?.id || ''] || 0}
+              {room.scores[host?.id || ''] || 0} - {room.scores[guest?.id || ''] || 0}
             </strong>
           </div>
 
@@ -135,13 +135,13 @@ export function Result({
 
           <div className={styles.finalScore}>
             <div className={styles.scoreCard}>
-              <span className={styles.playerName}>{currentPlayer?.name}</span>
-              <span className={styles.score}>{room.scores[currentPlayerId] || 0}</span>
+              <span className={`${styles.playerName} ${styles.primaryName}`}>{host?.name}</span>
+              <span className={styles.score}>{room.scores[host?.id || ''] || 0}</span>
             </div>
             <span className={styles.scoreDivider}>-</span>
             <div className={styles.scoreCard}>
-              <span className={styles.playerName}>{opponent?.name}</span>
-              <span className={styles.score}>{room.scores[opponent?.id || ''] || 0}</span>
+              <span className={`${styles.playerName} ${styles.secondaryName}`}>{guest?.name}</span>
+              <span className={styles.score}>{room.scores[guest?.id || ''] || 0}</span>
             </div>
           </div>
 

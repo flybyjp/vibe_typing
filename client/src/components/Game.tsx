@@ -59,7 +59,11 @@ export function Game({
   const myProgress = Math.floor((currentPosition / question.reading.length) * 100);
 
   const currentPlayer = room.players.find(p => p.id === currentPlayerId);
-  const opponent = room.players.find(p => p.id !== currentPlayerId);
+  const host = room.players.find(p => p.isHost);
+  const guest = room.players.find(p => !p.isHost);
+  const isHost = currentPlayer?.isHost ?? true;
+  const myColor: 'primary' | 'secondary' = isHost ? 'primary' : 'secondary';
+  const opponentColor: 'primary' | 'secondary' = isHost ? 'secondary' : 'primary';
 
   return (
     <div className={styles.container} ref={containerRef}>
@@ -68,12 +72,12 @@ export function Game({
           Round {round} / {totalRounds}
         </div>
         <div className={styles.scores}>
-          <span className={styles.myScore}>
-            {currentPlayer?.name}: {room.scores[currentPlayerId] || 0}
+          <span className={styles.primaryScore}>
+            {host?.name}: {room.scores[host?.id || ''] || 0}
           </span>
           <span className={styles.vs}>-</span>
-          <span className={styles.opponentScore}>
-            {opponent?.name}: {room.scores[opponent?.id || ''] || 0}
+          <span className={styles.secondaryScore}>
+            {guest?.name}: {room.scores[guest?.id || ''] || 0}
           </span>
         </div>
       </div>
@@ -81,12 +85,12 @@ export function Game({
       <div className={styles.progressSection}>
         <ProgressBar
           progress={myProgress}
-          color="primary"
+          color={myColor}
           label="あなた"
         />
         <ProgressBar
           progress={opponentProgress}
-          color="secondary"
+          color={opponentColor}
           label="相手"
         />
       </div>

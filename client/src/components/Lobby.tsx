@@ -20,7 +20,8 @@ export function Lobby({
   onLeave
 }: LobbyProps) {
   const currentPlayer = room.players.find(p => p.id === currentPlayerId);
-  const opponent = room.players.find(p => p.id !== currentPlayerId);
+  const host = room.players.find(p => p.isHost);
+  const guest = room.players.find(p => !p.isHost);
   const isHost = currentPlayer?.isHost ?? false;
   const isReady = currentPlayer?.isReady ?? false;
 
@@ -76,24 +77,24 @@ export function Lobby({
       </div>
 
       <div className={styles.players}>
-        <div className={`${styles.playerCard} ${currentPlayer?.isReady ? styles.ready : ''}`}>
-          <div className={styles.playerName}>
-            {currentPlayer?.name}
-            {isHost && <span className={styles.hostBadge}>ホスト</span>}
+        <div className={`${styles.playerCard} ${host?.isReady ? styles.ready : ''}`}>
+          <div className={`${styles.playerName} ${styles.primaryName}`}>
+            {host?.name}
+            <span className={styles.hostBadge}>ホスト</span>
           </div>
           <div className={styles.playerStatus}>
-            {currentPlayer?.isReady ? '準備完了' : '待機中'}
+            {host?.isReady ? '準備完了' : '待機中'}
           </div>
         </div>
 
         <div className={styles.vs}>VS</div>
 
-        <div className={`${styles.playerCard} ${opponent?.isReady ? styles.ready : ''} ${!opponent ? styles.waiting : ''}`}>
-          {opponent ? (
+        <div className={`${styles.playerCard} ${guest?.isReady ? styles.ready : ''} ${!guest ? styles.waiting : ''}`}>
+          {guest ? (
             <>
-              <div className={styles.playerName}>{opponent.name}</div>
+              <div className={`${styles.playerName} ${styles.secondaryName}`}>{guest.name}</div>
               <div className={styles.playerStatus}>
-                {opponent.isReady ? '準備完了' : '待機中'}
+                {guest.isReady ? '準備完了' : '待機中'}
               </div>
             </>
           ) : (
@@ -143,7 +144,7 @@ export function Lobby({
       </div>
 
       <div className={styles.actions}>
-        {opponent ? (
+        {guest ? (
           <button
             className={`${styles.readyButton} ${isReady ? styles.readyActive : ''}`}
             onClick={() => onReady(!isReady)}
