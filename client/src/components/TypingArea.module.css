@@ -6,7 +6,7 @@
 }
 
 .questionText {
-  font-size: 2rem;
+  font-size: 4rem;
   color: #1f2937;
   margin-bottom: 0.75rem;
   line-height: 1.4;
@@ -14,7 +14,7 @@
 }
 
 .reading {
-  font-size: 1.2rem;
+  font-size: 2.4rem;
   color: #6b7280;
   margin-bottom: 1.5rem;
   text-align: center;
@@ -22,10 +22,10 @@
 
 .romajiLine {
   font-family: 'Courier New', Consolas, monospace;
-  font-size: 1.5rem;
+  font-size: 3rem;
   text-align: center;
   letter-spacing: 0.05em;
-  min-height: 2rem;
+  min-height: 4rem;
 }
 
 .typed {

@@ -6,22 +6,22 @@
 }
 
 .label {
-  font-size: 0.9rem;
+  font-size: 1.8rem;
   color: #4b5563;
   min-width: 60px;
 }
 
 .track {
   flex: 1;
-  height: 12px;
+  height: 24px;
   background: #e5e7eb;
-  border-radius: 6px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
 .bar {
   height: 100%;
-  border-radius: 6px;
+  border-radius: 12px;
   transition: width 0.1s ease-out;
 }
 
@@ -34,7 +34,7 @@
 }
 
 .percentage {
-  font-size: 0.9rem;
+  font-size: 1.8rem;
   font-weight: 600;
   color: #374151;
   min-width: 40px;
