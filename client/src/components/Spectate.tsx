@@ -151,8 +151,20 @@ export function Spectate({
         </button>
       </div>
 
+      {/* 問題表示 */}
+      <div className={styles.questionArea}>
+        {question ? (
+          <>
+            <div className={styles.questionText}>{question.text}</div>
+            <div className={styles.questionReading}>{question.reading}</div>
+          </>
+        ) : (
+          <div className={styles.questionWaiting}>問題を待っています...</div>
+        )}
+      </div>
+
       {/* メインアリーナ */}
-      <div className={styles.arena}>
+      <div className={styles.arena} style={{ position: 'relative' }}>
         {/* 左プレイヤー */}
         <div className={`${styles.playerPanel} ${styles.leftPanel} ${roundResult?.winnerId === playerLeft?.id ? styles.panelWin : ''}`}>
           <div className={styles.panelPlayerName}>{playerLeft?.name ?? '---'}</div>
@@ -189,17 +201,14 @@ export function Spectate({
             </div>
           )}
         </div>
-      </div>
 
-      {/* 問題表示 */}
-      <div className={styles.questionArea}>
-        {question ? (
-          <>
-            <div className={styles.questionText}>{question.text}</div>
-            <div className={styles.questionReading}>{question.reading}</div>
-          </>
-        ) : (
-          <div className={styles.questionWaiting}>問題を待っています...</div>
+        {/* ポイント取得演出 */}
+        {flashInfo && (
+          <PointFlash
+            side={flashInfo.side}
+            playerName={flashInfo.playerName}
+            onAnimationEnd={handleFlashEnd}
+          />
         )}
       </div>
 
@@ -208,15 +217,6 @@ export function Spectate({
         <div className={styles.roundResultBanner}>
           次のラウンドを準備中...
         </div>
-      )}
-
-      {/* ポイント取得演出 */}
-      {flashInfo && (
-        <PointFlash
-          side={flashInfo.side}
-          playerName={flashInfo.playerName}
-          onAnimationEnd={handleFlashEnd}
-        />
       )}
     </div>
   );

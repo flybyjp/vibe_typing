@@ -24,7 +24,7 @@
   color: white;
   padding: 0.2rem 0.75rem;
   border-radius: 9999px;
-  font-size: 0.7rem;
+  font-size: 1.4rem;
   font-weight: 700;
   letter-spacing: 0.15em;
   animation: livePulse 2s infinite;
@@ -36,14 +36,14 @@
 }
 
 .roundInfo {
-  font-size: 1.1rem;
+  font-size: 2.2rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
 }
 
 .spectatorCount {
   margin-left: auto;
-  font-size: 0.9rem;
+  font-size: 1.8rem;
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -54,7 +54,7 @@
   border-radius: 0.5rem;
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 1.7rem;
   transition: all 0.2s;
 }
 
@@ -100,14 +100,14 @@
 }
 
 .panelPlayerName {
-  font-size: 1.5rem;
+  font-size: 3rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .panelScore {
-  font-size: 4rem;
+  font-size: 8rem;
   font-weight: 900;
   line-height: 1;
   margin-bottom: 1rem;
@@ -132,7 +132,7 @@
   display: flex;
   gap: 1.5rem;
   margin-top: 0.75rem;
-  font-size: 0.9rem;
+  font-size: 1.8rem;
   color: rgba(255, 255, 255, 0.6);
   animation: fadeIn 0.5s ease-in;
 }
@@ -169,7 +169,7 @@
 }
 
 .vsText {
-  font-size: 1.2rem;
+  font-size: 2.4rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.3);
   background: #0f0f1a;
@@ -179,14 +179,14 @@
 
 /* 問題エリア */
 .questionArea {
-  padding: 0.75rem 2rem;
+  padding: 1rem 2rem;
   background: rgba(255, 255, 255, 0.05);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
 }
 
 .questionText {
-  font-size: 1.5rem;
+  font-size: 3rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
   letter-spacing: 0.05em;
@@ -194,13 +194,13 @@
 }
 
 .questionReading {
-  font-size: 1rem;
+  font-size: 2rem;
   color: rgba(255, 255, 255, 0.4);
   letter-spacing: 0.15em;
 }
 
 .questionWaiting {
-  font-size: 1.1rem;
+  font-size: 2.2rem;
   color: rgba(255, 255, 255, 0.3);
   font-style: italic;
 }
@@ -211,7 +211,7 @@
   padding: 0.5rem;
   background: rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.5);
-  font-size: 0.85rem;
+  font-size: 1.7rem;
   animation: livePulse 1.5s infinite;
 }
 
@@ -227,7 +227,7 @@
 }
 
 .gameEndTitle {
-  font-size: 3rem;
+  font-size: 6rem;
   font-weight: 900;
   margin-bottom: 1.5rem;
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
@@ -262,7 +262,7 @@
 }
 
 .finalPlayerName {
-  font-size: 1rem;
+  font-size: 2rem;
   margin-bottom: 0.5rem;
 }
 
@@ -275,13 +275,13 @@
 }
 
 .finalScoreValue {
-  font-size: 2.5rem;
+  font-size: 5rem;
   font-weight: 900;
   color: white;
 }
 
 .finalScoreDivider {
-  font-size: 2rem;
+  font-size: 4rem;
   color: rgba(255, 255, 255, 0.3);
 }
 
@@ -311,7 +311,7 @@
   justify-content: space-between;
   padding: 0.4rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  font-size: 0.9rem;
+  font-size: 1.8rem;
 }
 
 .finalStatRow span {
@@ -328,7 +328,7 @@
 
 .exitButton {
   padding: 0.75rem 2.5rem;
-  font-size: 1rem;
+  font-size: 2rem;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
